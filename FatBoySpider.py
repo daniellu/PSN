@@ -50,7 +50,7 @@ class FatBoySpider(scrapy.Spider):
 
     def decideIfPostContainKeyWords(self, item):
         detail = str(item['detail'])
-        matches = re.search('owner', detail)
+        matches = re.search('owner financ', detail)
         if matches is not None:
             return True
         return False
