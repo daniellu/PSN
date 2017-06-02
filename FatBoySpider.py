@@ -2,27 +2,42 @@
 
 import scrapy
 from datetime import datetime, timedelta
+from scrapy import Item
+from post_item import PostItem
+
 
 class FatBoySpider(scrapy.Spider):
     name = 'fatboy-spider'
+    domain_url = 'https://kansascity.craigslist.org'
     start_urls = ['https://kansascity.craigslist.org/search/rea']
     should_stop = False
     current_year = datetime.today().year
-    end_time = datetime.now() - timedelta(days=2)
+    end_time = datetime.now() - timedelta(days=7)
 
     def parse(self, response):
         for result_info in response.css('p.result-info'):
             result_time = result_info.css('time ::text').extract_first()
             title = result_info.css('a.result-title ::text').extract_first()
-            yield {'date': result_time, 'title': title}
+            detail_link = self.domain_url + result_info.css('a.result-title::attr(href)').extract_first()
 
             result_time_object = self.parseDateTime(result_time + ' ' + str(self.current_year))
-            if(result_time_object < self.end_time):
+            if (result_time_object < self.end_time):
                 self.should_stop = True
 
-        if(self.should_stop == False):
+            yield scrapy.Request(detail_link, callback=self.parseDetail)
+
+        if False == self.should_stop:
             for next_page in response.css('span.buttons.next > a'):
                 yield response.follow(next_page, self.parse)
+
+    def parseDetail(self, response):
+        item = PostItem()
+        item['title'] = response.css('span[id=titletextonly] ::text').extract_first()
+        item['post_date'] = response.css('time ::text').extract_first()
+        item['price'] = response.css('span.price ::text').extract_first()
+        item['detail'] = response.css('section[id=postingbody] ::text').extract()
+        # here we need to do some regex matching to decide if the post need to be yielp
+        yield item
 
     def parseDateTime(self, date_string):
         datetime_object = datetime.strptime(date_string, '%b %d %Y')
