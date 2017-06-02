@@ -39,17 +39,17 @@ class FatBoySpider(scrapy.Spider):
         item['title'] = response.css('span[id=titletextonly] ::text').extract_first()
         item['post_date'] = response.css('time ::text').extract_first()
         item['price'] = response.css('span.price ::text').extract_first()
-        item['detail'] = response.css('section[id=postingbody] ::text').extract()
+        detail = response.css('section[id=postingbody] ::text').extract()
         # here we need to do some regex matching to decide if the post need to be yielp
-        if self.decideIfPostContainKeyWords(item):
+        if self.decideIfPostContainKeyWords(detail):
             yield item
 
     def parseDateTime(self, date_string):
         datetime_object = datetime.strptime(date_string, '%b %d %Y')
         return datetime_object
 
-    def decideIfPostContainKeyWords(self, item):
-        detail = str(item['detail'])
+    def decideIfPostContainKeyWords(self, detail):
+        detail = str(detail)
         matches = re.search('owner financ', detail)
         if matches is not None:
             return True
