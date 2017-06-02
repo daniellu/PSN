@@ -6,14 +6,13 @@ from scrapy import Item
 from post_item import PostItem
 import re
 
-
 class FatBoySpider(scrapy.Spider):
     name = 'fatboy-spider'
     domain_url = 'https://kansascity.craigslist.org'
     start_urls = ['https://kansascity.craigslist.org/search/rea']
     should_stop = False
     current_year = datetime.today().year
-    end_time = datetime.now() - timedelta(days=7)
+    end_time = datetime.now() - timedelta(days=2)
     content_to_match = ['cash buyer', 'owner financ', 'investment', 'rehab',
                         'private fund', 'note that owner financing', 'owner financed','owner financ']
 
@@ -24,14 +23,16 @@ class FatBoySpider(scrapy.Spider):
             detail_link = self.domain_url + result_info.css('a.result-title::attr(href)').extract_first()
 
             result_time_object = self.parseDateTime(result_time + ' ' + str(self.current_year))
+            yield scrapy.Request(detail_link, callback=self.parseDetail)
             if (result_time_object < self.end_time):
                 self.should_stop = True
-
-            yield scrapy.Request(detail_link, callback=self.parseDetail)
+                break
 
         if False == self.should_stop:
-            for next_page in response.css('span.buttons.next > a'):
-                yield response.follow(next_page, self.parse)
+            next_page_url = response.css('a.next::attr(href)').extract_first()
+            if next_page_url is not None:
+                yield response.follow(self.domain_url + next_page_url, self.parse)
+
 
     def parseDetail(self, response):
         item = PostItem()
