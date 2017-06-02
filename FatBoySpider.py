@@ -4,6 +4,7 @@ import scrapy
 from datetime import datetime, timedelta
 from scrapy import Item
 from post_item import PostItem
+import re
 
 
 class FatBoySpider(scrapy.Spider):
@@ -13,6 +14,8 @@ class FatBoySpider(scrapy.Spider):
     should_stop = False
     current_year = datetime.today().year
     end_time = datetime.now() - timedelta(days=7)
+    content_to_match = ['cash buyer', 'owner financ', 'investment', 'rehab',
+                        'private fund', 'note that owner financing', 'owner financed','owner financ']
 
     def parse(self, response):
         for result_info in response.css('p.result-info'):
@@ -32,13 +35,22 @@ class FatBoySpider(scrapy.Spider):
 
     def parseDetail(self, response):
         item = PostItem()
+        item['url'] = response.url
         item['title'] = response.css('span[id=titletextonly] ::text').extract_first()
         item['post_date'] = response.css('time ::text').extract_first()
         item['price'] = response.css('span.price ::text').extract_first()
         item['detail'] = response.css('section[id=postingbody] ::text').extract()
         # here we need to do some regex matching to decide if the post need to be yielp
-        yield item
+        if self.decideIfPostContainKeyWords(item):
+            yield item
 
     def parseDateTime(self, date_string):
         datetime_object = datetime.strptime(date_string, '%b %d %Y')
         return datetime_object
+
+    def decideIfPostContainKeyWords(self, item):
+        detail = str(item['detail'])
+        matches = re.search('owner', detail)
+        if matches is not None:
+            return True
+        return False
