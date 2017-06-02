@@ -9,3 +9,6 @@ easy_install lxml
 
 ### To install scrapy
 pip install Scrapy
+
+### To Run the spider
+python main.py

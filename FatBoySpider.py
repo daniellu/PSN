@@ -2,7 +2,6 @@
 
 import scrapy
 from datetime import datetime, timedelta
-from scrapy import Item
 from post_item import PostItem
 import re
 
@@ -13,7 +12,7 @@ class FatBoySpider(scrapy.Spider):
     should_stop = False
     current_year = datetime.today().year
     end_time = datetime.now() - timedelta(days=2)
-    content_to_match = ['cash buyer', 'owner financ', 'investment', 'rehab',
+    keywords = ['cash buyer', 'owner financ', 'investment', 'rehab',
                         'private fund', 'note that owner financing', 'owner financed','owner financ']
 
     def parse(self, response):
@@ -24,6 +23,8 @@ class FatBoySpider(scrapy.Spider):
 
             result_time_object = self.parseDateTime(result_time + ' ' + str(self.current_year))
             yield scrapy.Request(detail_link, callback=self.parseDetail)
+            #if the current item is older than the last n days
+            #the crawler can stop at this item
             if (result_time_object < self.end_time):
                 self.should_stop = True
                 break
@@ -51,7 +52,8 @@ class FatBoySpider(scrapy.Spider):
 
     def decideIfPostContainKeyWords(self, detail):
         detail = str(detail)
-        matches = re.search('owner financ', detail)
-        if matches is not None:
-            return True
+        for word in self.keywords:
+            matches = re.search(word, detail)
+            if matches is not None:
+                return True
         return False
