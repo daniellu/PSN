@@ -4,6 +4,7 @@ import scrapy
 from datetime import datetime, timedelta
 from post_item import PostItem
 import re
+import GitHubPublisher
 
 class FatBoySpider(scrapy.Spider):
     name = 'fatboy-spider'
@@ -36,6 +37,10 @@ class FatBoySpider(scrapy.Spider):
 
     def closed(self, reason):
         print('Fat boy crawler finished')
+        today = datetime.today().strftime('%B-%d-%Y')
+        filename = 'docs/_data/craigslist/' + today + '-craigslist.json'
+        publisher = GitHubPublisher.GitHubPublisher('', '', '')
+        publisher.publish(filename)
 
 
     def parseDetail(self, response):
