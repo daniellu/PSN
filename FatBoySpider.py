@@ -34,6 +34,9 @@ class FatBoySpider(scrapy.Spider):
             if next_page_url is not None:
                 yield response.follow(self.domain_url + next_page_url, self.parse)
 
+    def closed(self, reason):
+        print('Fat boy crawler finished')
+
 
     def parseDetail(self, response):
         item = PostItem()

@@ -1,3 +1,7 @@
 # Author DL
 from scrapy import cmdline
-cmdline.execute("scrapy runspider FatBoySpider.py -o Results/items.json -t json".split())
+from datetime import datetime, timedelta
+
+today = datetime.today().strftime('%B-%d-%Y')
+command = "scrapy runspider FatBoySpider.py -o Results/" + today + ".json -t json"
+cmdline.execute(command.split())
