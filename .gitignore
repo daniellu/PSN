@@ -17,6 +17,7 @@ build/
 Results/
 .idea/
 __pycache__/
+docs/_data
 
 # Add the Reference assembly folder
 !ReferenceAssemblies/
