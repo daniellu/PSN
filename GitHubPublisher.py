@@ -29,7 +29,7 @@ class GitHubPublisher(object):
         base_tree = repo.get_git_tree(master_sha)
         element_list = list()
         for entry in file_list:
-            with open(entry, 'rb') as input_file:
+            with open(entry, 'r') as input_file:
                 data = input_file.read()
             element = InputGitTreeElement(entry, '100644', 'blob', data)
             element_list.append(element)
