@@ -13,7 +13,7 @@ class GitHubPublisher(object):
         g = Github(self.username, self.password)
         repo = g.get_user().get_repo(self.repo)
         file_list = [filename]
-        commit_message = 'Add spider result at June-20-2017'
+        commit_message = 'Add spider result'
         master_ref = repo.get_git_ref('heads/master')
         master_sha = master_ref.object.sha
         base_tree = repo.get_git_tree(master_sha)

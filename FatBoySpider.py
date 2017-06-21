@@ -38,7 +38,7 @@ class FatBoySpider(scrapy.Spider):
     def closed(self, reason):
         print('Fat boy crawler finished')
         today = datetime.today().strftime('%B-%d-%Y')
-        filename = '_data/craigslist/' + today + '-craigslist.json'
+        filename = '_data/craigslist.json'
         publisher = GitHubPublisher.GitHubPublisher('', '', '')
         publisher.publish(filename)
 
