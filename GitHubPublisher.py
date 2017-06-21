@@ -1,6 +1,5 @@
 # Author DL
 
-#from git import Repo
 from github import Github
 from github import InputGitTreeElement
 
@@ -9,15 +8,6 @@ class GitHubPublisher(object):
         self.username = username
         self.password = password
         self.repo = repo
-
-    # def publish(self, filename):
-    #     repo = Repo(self.repo)
-    #     file_list = [filename]
-    #     commit_message = 'Add spider result'
-    #     repo.index.add(file_list)
-    #     repo.index.commit(commit_message)
-    #     origin = repo.remote('origin')
-    #     origin.push()
 
     def publish(self, filename):
         g = Github(self.username, self.password)
