@@ -4,13 +4,12 @@ from github import Github
 from github import InputGitTreeElement
 
 class GitHubPublisher(object):
-    def __init__(self, username, password, repo):
-        self.username = username
-        self.password = password
+    def __init__(self, token, repo):
+        self.token = token
         self.repo = repo
 
     def publish(self, filename):
-        g = Github(self.username, self.password)
+        g = Github(self.token)
         repo = g.get_user().get_repo(self.repo)
         file_list = [filename]
         commit_message = 'Add spider result'
