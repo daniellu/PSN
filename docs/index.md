@@ -1,6 +1,10 @@
-Hello World!
+---
+title: Hello World!
+---
 
-Result of Craiglist
+<h2>Results of Craiglist Spider</h2>
+
+
 <table>
     <thead>
         <tr>
@@ -11,8 +15,7 @@ Result of Craiglist
         </tr>
     </thead>
     <tbody>
-    {% for post_hash in site.data.craigslist %}
-    {% assign post = post_hash[1] %}
+    {% for post in site.data.craigslist %}    
         <tr>
             <td>{{ post.title }}</td>
             <td>{{ post.price }}</td>
