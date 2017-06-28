@@ -9,3 +9,4 @@ class PostItem(scrapy.Item):
     #detail = Field()
     post_date = Field()
     price = Field()
+    city = Field()
