@@ -3,6 +3,7 @@ from scrapy.exceptions import DropItem
 from scrapy.contrib.exporter import CsvItemExporter
 import os
 import csv
+import re
 
 class FatBoyPipeline(object):
 
@@ -10,6 +11,10 @@ class FatBoyPipeline(object):
     self.files = {}
     self.filename = '_data/craigslist.csv'
     self.imported_posts = set()
+    self.city_dic = {
+        'kansascity' : 'kansascity',
+        'ksu' : 'manhattan'
+    }
 
   @classmethod
   def from_crawler(cls, crawler):
@@ -39,6 +44,7 @@ class FatBoyPipeline(object):
     if(url in self.imported_posts):
         raise DropItem("Missing price in %s" % item)
     else:
+        item['city'] = self.decidePostCity(item['url'])
         self.exporter.export_item(item)
     return item
 
@@ -47,3 +53,10 @@ class FatBoyPipeline(object):
           reader = csv.DictReader(csvfile)
           for row in reader:
               self.imported_posts.add(row['url'])
+
+  def decidePostCity(self, url):
+      matchObj = url[8:url.index('.craigslist.org')]
+      if(matchObj in self.city_dic):
+          return self.city_dic[matchObj]
+      else:
+        return matchObj

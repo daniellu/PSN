@@ -3,6 +3,7 @@ from FatBoySpider import FatBoySpider
 from scrapy.crawler import CrawlerProcess
 import itchat, time
 from itchat.content import *
+from scrapy.utils.project import get_project_settings
 
 class FatBoyBot(object):
     def __init__(self):
@@ -38,11 +39,12 @@ class FatBoyBot(object):
 
     @staticmethod
     def run_scraper(source, start_date, end_date, receiver):
-        process = CrawlerProcess({
-            'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
-            'FEED_FORMAT': 'json',
-            'FEED_URI': '_data/craigslist.json'
-        })
+        setting = get_project_settings()
+        setting['ITEM_PIPELINES'] = {
+            'FatBoyPipeline.FatBoyPipeline': 300,
+        }
+        process = CrawlerProcess(setting)
         process.crawl(FatBoySpider)
         process.start()  # the script will block here until the crawling is finished
+
         return 'Go to https://daniellu.github.io/FBL/ to view the results'
