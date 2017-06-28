@@ -8,38 +8,40 @@ import GitHubPublisher
 
 class FatBoySpider(scrapy.Spider):
     name = 'fatboy-spider'
-    domain_url = 'https://kansascity.craigslist.org'
-    start_urls = ['https://kansascity.craigslist.org/search/rea']
-    should_stop = False
+    start_urls = ['https://kansascity.craigslist.org/search/rea', 'https://ksu.craigslist.org/search/rea']
     current_year = datetime.today().year
     end_time = datetime.now() - timedelta(days=2)
     keywords = ['cash buyer', 'owner financ', 'investment', 'rehab',
                         'private fund', 'note that owner financing', 'owner financed','owner financ']
 
+    def __init__(self):
+        self.should_stop = list(map(lambda x: {self.getDomainUrl(x) : False}, self.start_urls))
+
     def parse(self, response):
+        domain_url = self.getDomainUrl(response.url)
         for result_info in response.css('p.result-info'):
             result_time = result_info.css('time ::text').extract_first()
             title = result_info.css('a.result-title ::text').extract_first()
-            detail_link = self.domain_url + result_info.css('a.result-title::attr(href)').extract_first()
+            detail_link = self.getDomainUrl(response.url) + result_info.css('a.result-title::attr(href)').extract_first()
 
             result_time_object = self.parseDateTime(result_time + ' ' + str(self.current_year))
             yield scrapy.Request(detail_link, callback=self.parseDetail)
             #if the current item is older than the last n days
             #the crawler can stop at this item
             if (result_time_object < self.end_time):
-                self.should_stop = True
+                self.should_stop[domain_url] = True
                 break
 
-        if False == self.should_stop:
+        if False == self.should_stop[domain_url]:
             next_page_url = response.css('a.next::attr(href)').extract_first()
             if next_page_url is not None:
-                yield response.follow(self.domain_url + next_page_url, self.parse)
+                yield response.follow(self.getDomainUrl(response.url) + next_page_url, self.parse)
 
     def closed(self, reason):
         print('Fat boy crawler finished')
         today = datetime.today().strftime('%B-%d-%Y')
-        filename = '_data/craigslist.json'
-        publisher = GitHubPublisher.GitHubPublisher('', 'FBL')
+        filename = '_data/craigslist.csv'
+        publisher = GitHubPublisher.GitHubPublisher('', '')
         publisher.publish(filename)
 
 
@@ -65,3 +67,8 @@ class FatBoySpider(scrapy.Spider):
             if matches is not None:
                 return True
         return False
+
+    def getDomainUrl(self, url):
+        return url[:url.index('/search')]
+
+
