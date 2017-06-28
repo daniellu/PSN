@@ -13,9 +13,11 @@ class FatBoySpider(scrapy.Spider):
     end_time = datetime.now() - timedelta(days=2)
     keywords = ['cash buyer', 'owner financ', 'investment', 'rehab',
                         'private fund', 'note that owner financing', 'owner financed','owner financ']
+    should_stop = {}
 
     def __init__(self):
-        self.should_stop = list(map(lambda x: {self.getDomainUrl(x) : False}, self.start_urls))
+        for url in self.start_urls:
+            self.should_stop[self.getDomainUrl(url)] = False
 
     def parse(self, response):
         domain_url = self.getDomainUrl(response.url)
@@ -29,8 +31,10 @@ class FatBoySpider(scrapy.Spider):
             #if the current item is older than the last n days
             #the crawler can stop at this item
             if (result_time_object < self.end_time):
+                temp = self.should_stop[domain_url]
                 self.should_stop[domain_url] = True
                 break
+
 
         if False == self.should_stop[domain_url]:
             next_page_url = response.css('a.next::attr(href)').extract_first()
