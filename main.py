@@ -1,7 +1,7 @@
 # Author DL
 from scrapy import cmdline
 import os
-#from FatBoyBot import FatBoyBot
+from FatBoyBot import FatBoyBot
 from FatBoySpider import FatBoySpider
 from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
@@ -12,12 +12,7 @@ if os.path.exists('_data/craigslist.json'):
 else:
     print("No data file exist")
 
-#bot = FatBoyBot()
+bot = FatBoyBot()
 
-setting = get_project_settings()
-setting['ITEM_PIPELINES'] = {
-    'FatBoyPipeline.FatBoyPipeline': 300,
-}
-process = CrawlerProcess(setting)
-process.crawl(FatBoySpider)
-process.start()  # the script will block here until the crawling is finished
+#command = "scrapy runspider FatBoySpider.py -o _data/craigslist.csv -t csv"
+#cmdline.execute(command.split())
