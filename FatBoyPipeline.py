@@ -42,7 +42,7 @@ class FatBoyPipeline(object):
   def process_item(self, item, spider):
     url = item['url']
     if(url in self.imported_posts):
-        raise DropItem("Missing price in %s" % item)
+        raise DropItem("Item with %s has been imported already." % url)
     else:
         item['city'] = self.decidePostCity(item['url'])
         self.exporter.export_item(item)

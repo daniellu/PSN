@@ -2,6 +2,10 @@
 from scrapy import cmdline
 import os
 #from FatBoyBot import FatBoyBot
+from FatBoySpider import FatBoySpider
+from scrapy.crawler import CrawlerProcess
+from scrapy.settings import Settings
+from scrapy.utils.project import get_project_settings
 
 if os.path.exists('_data/craigslist.json'):
     os.remove('_data/craigslist.json')
@@ -10,5 +14,10 @@ else:
 
 #bot = FatBoyBot()
 
-command = "scrapy runspider FatBoySpider.py -o _data/craigslist.csv -t csv"
-cmdline.execute(command.split())
+setting = get_project_settings()
+setting['ITEM_PIPELINES'] = {
+    'FatBoyPipeline.FatBoyPipeline': 300,
+}
+process = CrawlerProcess(setting)
+process.crawl(FatBoySpider)
+process.start()  # the script will block here until the crawling is finished
