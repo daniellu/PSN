@@ -8,6 +8,12 @@ import GitHubPublisher
 
 class FatBoySpider(scrapy.Spider):
     name = 'fatboy-spider'
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'FatBoyPipeline.FatBoyPipeline': 300
+        }
+    }
+
     start_urls = ['https://kansascity.craigslist.org/search/rea', 'https://ksu.craigslist.org/search/rea']
     current_year = datetime.today().year
     end_time = datetime.now() - timedelta(days=2)
@@ -45,7 +51,7 @@ class FatBoySpider(scrapy.Spider):
         print('Fat boy crawler finished')
         today = datetime.today().strftime('%B-%d-%Y')
         filename = '_data/craigslist.csv'
-        publisher = GitHubPublisher.GitHubPublisher('', '')
+        publisher = GitHubPublisher.GitHubPublisher('', 'FBL')
         publisher.publish(filename)
 
 
