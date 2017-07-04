@@ -39,14 +39,3 @@ class FatBoyBot(object):
     @staticmethod
     def bullshit_reply(message):
         return 'Fuck you'
-
-    @classmethod
-    def run_scraper(self):
-        setting = get_project_settings()
-        setting['ITEM_PIPELINES'] = {
-            'FatBoyPipeline.FatBoyPipeline': 300,
-        }
-        command = "scrapy runspider FatBoySpider.py -o _data/craigslist.csv -t csv"
-        cmdline.execute(command.split())
-
-        return 'Go to https://daniellu.github.io/FBL/ to view the results'

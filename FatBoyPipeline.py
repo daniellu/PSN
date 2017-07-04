@@ -3,7 +3,7 @@ from scrapy.exceptions import DropItem
 from scrapy.contrib.exporter import CsvItemExporter
 import os
 import csv
-import re
+from system_config import system_config
 
 class FatBoyPipeline(object):
 
@@ -11,10 +11,7 @@ class FatBoyPipeline(object):
     self.files = {}
     self.filename = '_data/craigslist.csv'
     self.imported_posts = set()
-    self.city_dic = {
-        'kansascity' : 'kansascity',
-        'ksu' : 'manhattan'
-    }
+    self.city_dic = map(lambda x: {x['url_part'] : x['name'] }, system_config['cities_data_sources'])
 
   @classmethod
   def from_crawler(cls, crawler):

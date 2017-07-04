@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from post_item import PostItem
 import re
 import GitHubPublisher
+from system_config import system_config
 
 class FatBoySpider(scrapy.Spider):
     name = 'fatboy-spider'
@@ -14,7 +15,7 @@ class FatBoySpider(scrapy.Spider):
         }
     }
 
-    start_urls = ['https://kansascity.craigslist.org/search/rea', 'https://ksu.craigslist.org/search/rea']
+    start_urls = (list(map(lambda x: x['url'], system_config['cities_data_sources'])))
     current_year = datetime.today().year
     end_time = datetime.now() - timedelta(days=2)
     keywords = ['cash buyer', 'owner financ', 'investment', 'rehab',
@@ -50,9 +51,9 @@ class FatBoySpider(scrapy.Spider):
     def closed(self, reason):
         print('Fat boy crawler finished')
         today = datetime.today().strftime('%B-%d-%Y')
-        filename = '_data/craigslist.csv'
-        publisher = GitHubPublisher.GitHubPublisher('', 'FBL')
-        publisher.publish(filename)
+        filename = system_config['export_file_name']
+        #publisher = GitHubPublisher.GitHubPublisher(system_config['github_token'], system_config['github_repo'])
+        #publisher.publish(filename)
 
 
     def parseDetail(self, response):
