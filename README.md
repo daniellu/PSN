@@ -3,12 +3,10 @@
 
 pip install pypiwin32 
 
-(If you see the Could not find function xmlCheckVersion in library libxml2. Is libxml2 installed? error) 
-
-easy_install lxml 
-
-### To install scrapy
-pip install Scrapy
+```angular2html
+$ conda env update -f psn.yml
+$ activate psn  #ensure pycharm to use the virtual environment
+```
 
 ### To Run the spider
 python main.py
