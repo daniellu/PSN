@@ -53,8 +53,8 @@ class FatBoySpider(scrapy.Spider):
         print('Fat boy crawler finished')
         today = datetime.today().strftime('%B-%d-%Y')
         filename = system_config['export_file_name']
-        #publisher = GitHubPublisher.GitHubPublisher(system_config['github_token'], system_config['github_repo'])
-        #publisher.publish(filename)
+        publisher = GitHubPublisher.GitHubPublisher(system_config['github_token'], system_config['github_repo'])
+        publisher.publish(filename)
 
 
     def parseDetail(self, response):
