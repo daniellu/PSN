@@ -7,6 +7,7 @@ import re
 import GitHubPublisher
 from system_config import system_config
 
+
 class FatBoySpider(scrapy.Spider):
     name = 'fatboy-spider'
     custom_settings = {
@@ -17,7 +18,7 @@ class FatBoySpider(scrapy.Spider):
 
     start_urls = (list(map(lambda x: x['url'], system_config['cities_data_sources'])))
     current_year = datetime.today().year
-    end_time = datetime.now() - timedelta(days=2)
+    end_time = datetime.now() - timedelta(days=7)
     keywords = ['cash buyer', 'owner financ', 'investment', 'rehab',
                         'private fund', 'note that owner financing', 'owner financed','owner financ']
     should_stop = {}
