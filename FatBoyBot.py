@@ -1,11 +1,9 @@
 # Author DL
-from FatBoySpider import FatBoySpider
-from scrapy.crawler import CrawlerProcess
-from scrapy import cmdline
-import itchat, time
-from itchat.content import *
-from scrapy.utils.project import get_project_settings
 import subprocess
+
+import itchat
+from itchat.content import *
+
 
 class FatBoyBot(object):
     def __init__(self):
@@ -30,7 +28,7 @@ class FatBoyBot(object):
 
     @staticmethod
     def process_message(message, receiver):
-        if('干活' in str(message)):
+        if ('干活' in str(message)):
             subprocess.call("scrapy runspider FatBoySpider.py -o _data/craigslist.csv -t csv", shell=True)
             return 'Go to https://daniellu.github.io/FBL/ to view the results'
         else:

@@ -3,6 +3,7 @@
 from github import Github
 from github import InputGitTreeElement
 
+
 class GitHubPublisher(object):
     def __init__(self, token, repo):
         self.token = token
